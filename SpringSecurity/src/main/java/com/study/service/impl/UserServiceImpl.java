@@ -2,16 +2,20 @@ package com.study.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.study.NoDataFoundException;
-import com.study.ParameterException;
-import com.study.entity.User;
-import com.study.entity.dto.UserDTO;
+import com.study.exception.NoDataFoundException;
+import com.study.exception.ParameterException;
+import com.study.exception.UserRoleException;
+import com.study.model.User;
+import com.study.model.dto.UserDTO;
 import com.study.repository.UserRepository;
+import com.study.role.UserRole;
 import com.study.service.UserService;
 
 @Service
@@ -20,18 +24,18 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	UserRepository repository;
 
+	@Transactional
 	@Override
-	public UserDTO saveOrUpdate(User user) throws Exception {
+	public UserDTO saveOrUpdate(User user)  throws Exception{
 		
-		User userDB = getReferenceById(user.getId());
-		if( userDB == null ) {
-			
-			user = repository.save(user);
-			
-		} else {
-			
-			userDB.setPassword	( user.getPassword() );
+		User userDB = getReferenceByUsername(user.getUsername());
+		if( userDB != null ) {
 			userDB.setName		( user.getName() );
+			userDB.setListRole	( user.getListRole() );
+			
+			if( user.getActive() != null )
+				userDB.setActive	( user.getActive() );
+			
 			user = userDB;
 		}
 		
@@ -41,7 +45,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public UserDTO getReference(Long id) throws Exception {
+	public UserDTO getReference(UUID id) throws Exception {
 		
 		if( id == null )
 			throw new ParameterException();
@@ -53,16 +57,8 @@ public class UserServiceImpl implements UserService{
 		return new UserDTO( reference );
 	}
 	
-	private User getReferenceById(Long id) throws Exception {
-		
-		if( id == null )
-			return null;
-		
-		return repository.getReferenceById(id);
-	}
-
 	@Override
-	public List<UserDTO> getList() throws Exception {
+	public List<UserDTO> getList() throws Exception{
 			
 		List<UserDTO> listDTO 	= new ArrayList<>(0);
 		
@@ -75,9 +71,9 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<UserDTO> getList(User user) throws Exception {
+	public List<UserDTO> getList(User user) throws Exception{
 		
-		if( user == null || user.getId() == null && (user.getUser() == null || user.getUser().isBlank()) )
+		if( user == null || user.getId() == null && (user.getUsername() == null || user.getUsername().isBlank()) )
 			throw new ParameterException();
 		
 		List<UserDTO> list = new ArrayList<>(0);
@@ -89,14 +85,65 @@ public class UserServiceImpl implements UserService{
 		return list;
 	}
 
+	@Transactional
 	@Override
-	public void delete(Long id) throws Exception {
+	public void delete(UUID id)  throws Exception{
 		
 		User user = getReferenceById(id);
 		if( user == null )
 			throw new NoDataFoundException();
 		
 		repository.delete(user);
+	}
+	
+	private User getReferenceById(UUID id) throws Exception {
+		
+		if( id == null )
+			return null;
+		
+		return repository.findOne( Example.of( new User(id) ) ).orElse(null);
+	}
+	
+	@Override
+	public User getReferenceByUsername(String username) throws Exception {
+		
+		if( username == null || username.isBlank() )
+			return null;
+		
+		User userDB = new User();
+		userDB.setUsername(username);
+		
+		return repository.findOne( Example.of(userDB) ).orElse(null);
+	}
+
+	@Override
+	public void deactivate(UUID id, UUID userAction) throws Exception {
+		activeOrDeactivateUser(id, userAction, 0);
+	}
+
+	@Override
+	public void activate(UUID id, UUID userAction) throws Exception {
+		activeOrDeactivateUser(id, userAction, 1);
+	}
+	
+	private void activeOrDeactivateUser( UUID id, UUID userAction, Integer active ) throws Exception {
+
+		verifyAdminRole(userAction);
+		
+		User reference = getReferenceById(id);
+		if( reference == null )
+			throw new NoDataFoundException();
+
+		reference.setActive(active);
+		saveOrUpdate(reference);
+	}
+	
+	private void verifyAdminRole( UUID id ) throws Exception {
+		
+		UserDTO reference = getReference(id);
+		if( !reference.getListRole().contains( UserRole.ADMIN ) )
+			throw new UserRoleException();
+		
 	}
 	
 }

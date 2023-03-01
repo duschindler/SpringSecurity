@@ -5,9 +5,9 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.study.model.User;
+import com.study.model.Role;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, UUID>{
+public interface RoleRepository extends JpaRepository<Role, UUID>{
 
 }

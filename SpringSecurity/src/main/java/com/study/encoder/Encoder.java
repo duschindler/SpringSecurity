@@ -1,33 +1,28 @@
 package com.study.encoder;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-public abstract class Encoder {
+public class Encoder {
 
-	private static final String ALGORITHM_SHA256 = "SHA-256";
+	private static Encoder instance;
+	private static BCryptPasswordEncoder encoder;
 	
-	public static String encode( String string ) {
-		
-		if( string == null || string.isBlank() )
-			return null;
-		
-		String encoded = null;
-		try {
-			
-			encoded = new StringBuilder().append(encodeSHA256(string)).toString();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return encoded;
+	public Encoder() {
+		encoder = new BCryptPasswordEncoder();
 	}
 	
-	private static byte[] encodeSHA256( String string ) throws NoSuchAlgorithmException {
-		return MessageDigest.getInstance( ALGORITHM_SHA256 ).digest( 
-				string.getBytes()
-			);
-	} 
+	public static final Encoder getInstance() {
+		
+		if( instance == null ) 
+			instance 			= new Encoder();
+
+		
+		return instance;
+	}
+	
+	public String encode( String rawPassword ) {
+		return encoder.encode(rawPassword);
+	}
+	
 	
 }
