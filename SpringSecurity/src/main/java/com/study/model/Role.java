@@ -2,11 +2,12 @@ package com.study.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import com.study.role.UserRole;
+import com.study.role.UserRoleEnum;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,18 +34,18 @@ public class Role implements GrantedAuthority, Serializable {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, unique = true)
-	private UserRole name;
+	private UserRoleEnum name;
 	
 	@ManyToMany
 	private List<User> listUser;
 
 	public Role() {}
 	
-	public Role(UserRole name) {
+	public Role(UserRoleEnum name) {
 		this.name = name;
 	}
 
-	public Role(UUID id, UserRole name) {
+	public Role(UUID id, UserRoleEnum name) {
 		this.id = id;
 		this.name = name;
 	}
@@ -57,11 +58,11 @@ public class Role implements GrantedAuthority, Serializable {
 		this.id = id;
 	}
 
-	public UserRole getName() {
+	public UserRoleEnum getName() {
 		return name;
 	}
 
-	public void setName(UserRole name) {
+	public void setName(UserRoleEnum name) {
 		this.name = name;
 	}
 	
@@ -77,6 +78,22 @@ public class Role implements GrantedAuthority, Serializable {
 	public String getAuthority() {
 		return this.name.toString();
 	}
-	
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Role other = (Role) obj;
+		return name == other.name;
+	}
 	
 }

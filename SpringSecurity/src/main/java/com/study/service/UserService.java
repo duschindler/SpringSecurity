@@ -14,7 +14,7 @@ public interface UserService {
 	List<UserDTO> getList		(  ) throws Exception;
 	List<UserDTO> getList		( User user ) throws Exception;
 	void delete					( UUID id ) throws Exception;
-	void deactivate				( UUID id, UUID userAction ) throws Exception;
-	void activate				( UUID id, UUID userAction ) throws Exception;
+	void deactivate				( UUID id ) throws Exception;
+	void activate				( UUID id ) throws Exception;
 	
 }

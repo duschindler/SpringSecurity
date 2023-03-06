@@ -23,54 +23,63 @@ public class GlobalControllerExceptionHandler {
 	@ExceptionHandler( Exception.class )
 	@ResponseStatus( HttpStatus.BAD_REQUEST )
 	public @ResponseBody ErrorResponse handleException( Exception ex ) {
+		ex.printStackTrace();
 		return new ErrorResponse( HttpStatus.BAD_REQUEST.value(), "There's a problem with the proccess.");
 	}
 	
 	@ExceptionHandler( DataAlreadyExistsException.class )
 	@ResponseStatus( HttpStatus.CONFLICT )
 	public @ResponseBody ErrorResponse handleException( DataAlreadyExistsException ex ) {
+		ex.printStackTrace();
 		return new ErrorResponse( HttpStatus.CONFLICT.value(), ex.getMessage());
 	}
 	
 	@ExceptionHandler( MethodNotFoundException.class )
 	@ResponseStatus( HttpStatus.METHOD_NOT_ALLOWED )
 	public @ResponseBody ErrorResponse handleException( MethodNotFoundException ex ) {
+		ex.printStackTrace();
 		return new ErrorResponse( HttpStatus.METHOD_NOT_ALLOWED.value(), ex.getMessage());
 	}
 	
 	@ExceptionHandler( HttpRequestMethodNotSupportedException.class )
 	@ResponseStatus( HttpStatus.METHOD_NOT_ALLOWED )
 	public @ResponseBody ErrorResponse handleException( HttpRequestMethodNotSupportedException ex ) {
+		ex.printStackTrace();
 		return new ErrorResponse( HttpStatus.METHOD_NOT_ALLOWED.value(), ex.getMessage());
 	}
 	
 	@ExceptionHandler( NoDataFoundException.class )
 	@ResponseStatus( HttpStatus.BAD_REQUEST )
 	public @ResponseBody ErrorResponse handleException( NoDataFoundException ex ) {
+		ex.printStackTrace();
 		return new ErrorResponse( HttpStatus.BAD_REQUEST.value(), ex.getMessage());
 	}
 	
 	@ExceptionHandler( ParameterException.class )
 	@ResponseStatus( HttpStatus.BAD_REQUEST )
 	public @ResponseBody ErrorResponse handleException( ParameterException ex ) {
+		ex.printStackTrace();
 		return new ErrorResponse( HttpStatus.BAD_REQUEST.value(), ex.getMessage());
 	}
 	
 	@ExceptionHandler( DataIntegrityViolationException.class )
 	@ResponseStatus( HttpStatus.BAD_REQUEST )
 	public @ResponseBody ErrorResponse handleException( DataIntegrityViolationException ex ) {
+		ex.printStackTrace();
 		return new ErrorResponse( HttpStatus.BAD_REQUEST.value(), ex.getMessage());
 	}
 	
 	@ExceptionHandler( UserRoleException.class )
 	@ResponseStatus( HttpStatus.FORBIDDEN )
 	public @ResponseBody ErrorResponse handleException( UserRoleException ex ) {
+		ex.printStackTrace();
 		return new ErrorResponse( HttpStatus.FORBIDDEN.value(), ex.getMessage());
 	}
 	
 	@ExceptionHandler( UserNotActiveException.class )
 	@ResponseStatus( HttpStatus.FORBIDDEN )
 	public @ResponseBody ErrorResponse handleException( UserNotActiveException ex ) {
+		ex.printStackTrace();
 		return new ErrorResponse( HttpStatus.FORBIDDEN.value(), ex.getMessage());
 	}
 	

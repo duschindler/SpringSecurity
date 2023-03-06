@@ -1,16 +1,17 @@
 package com.study.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.study.encoder.Encoder;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,6 +22,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "tb_user")
@@ -44,9 +46,9 @@ public class User implements UserDetails, Serializable{
 	@Column( name="active", nullable = false )
 	private Integer active;
 	
-	@ManyToMany( targetEntity = Role.class, fetch = FetchType.EAGER )
+	@ManyToMany( targetEntity = Role.class, fetch = FetchType.EAGER)
 	@JoinTable(
-			name = "tb_user_role",
+			name 				= "tb_user_role",
 			joinColumns 		= @JoinColumn(name="id_user", referencedColumnName="id"),
 			inverseJoinColumns 	= @JoinColumn(name="id_role", referencedColumnName="id")
 	)
@@ -131,7 +133,7 @@ public class User implements UserDetails, Serializable{
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return this.getListRole();
+		return this.listRole;
 	}
 
 	@Override

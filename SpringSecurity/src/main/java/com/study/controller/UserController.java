@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.study.model.User;
 import com.study.model.dto.UserDTO;
+import com.study.role.UserRoleEnum;
 import com.study.service.UserService;
 
 @RestController
@@ -24,6 +26,7 @@ public class UserController {
 	@Autowired
 	UserService service;
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping(path = {"/"})
 	public List<UserDTO> list() throws Exception{
 		return service.getList();

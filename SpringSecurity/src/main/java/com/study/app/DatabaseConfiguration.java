@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.study.model.Role;
 import com.study.model.User;
-import com.study.role.UserRole;
+import com.study.role.UserRoleEnum;
 import com.study.service.RoleService;
 import com.study.service.UserService;
 
@@ -31,13 +31,12 @@ public class DatabaseConfiguration {
 			log.info( "-------------------------" );
 			
 			log.info( "Preloading Roles STARTED" );
-				Role admin 	= roleService.doSave( UserRole.ADMIN );
+				Role admin 	= roleService.doSave( UserRoleEnum.ROLE_ADMIN );
 				List<Role> listRoleAdmin = new ArrayList<>(0);
 				listRoleAdmin.add(admin);
 				
-				Role normal = roleService.doSave( UserRole.NORMAL );
+				Role normal = roleService.doSave( UserRoleEnum.ROLE_NORMAL );
 				List<Role> listRoleNormal = new ArrayList<>(0);
-				listRoleNormal.add(admin);
 				listRoleNormal.add(normal);
 			log.info( "Preloading Roles ENDED" );
 			
@@ -54,6 +53,7 @@ public class DatabaseConfiguration {
 				userService.saveOrUpdate( 
 						new User(UUID.randomUUID(), "joaquim", "senha123", "Joaquim", 1, listRoleNormal) 
 					);
+				
 			log.info( "Preloading Users ENDED" );
 			
 			log.info( "-------------------------" );
