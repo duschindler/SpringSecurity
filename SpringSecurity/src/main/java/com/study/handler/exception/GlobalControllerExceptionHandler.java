@@ -2,6 +2,7 @@ package com.study.handler.exception;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -79,6 +80,13 @@ public class GlobalControllerExceptionHandler {
 	@ExceptionHandler( UserNotActiveException.class )
 	@ResponseStatus( HttpStatus.FORBIDDEN )
 	public @ResponseBody ErrorResponse handleException( UserNotActiveException ex ) {
+		ex.printStackTrace();
+		return new ErrorResponse( HttpStatus.FORBIDDEN.value(), ex.getMessage());
+	}
+	
+	@ExceptionHandler( AccessDeniedException.class )
+	@ResponseStatus( HttpStatus.FORBIDDEN )
+	public @ResponseBody ErrorResponse handleException( AccessDeniedException ex ) {
 		ex.printStackTrace();
 		return new ErrorResponse( HttpStatus.FORBIDDEN.value(), ex.getMessage());
 	}
